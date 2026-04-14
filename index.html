@@ -1,59 +1,644 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
   <title>B-Day Rivals</title>
   <style>
+    :root {
+      --bg: #05070d;
+      --bg-2: #07131f;
+      --cyan: #00e5ff;
+      --cyan-soft: rgba(0, 229, 255, 0.18);
+      --green: #53ff9a;
+      --green-soft: rgba(83, 255, 154, 0.16);
+      --red: #ff4b6e;
+      --red-soft: rgba(255, 75, 110, 0.14);
+      --yellow: #ffd54a;
+      --yellow-soft: rgba(255, 213, 74, 0.14);
+      --white: #f5fbff;
+      --text: #cfe9f5;
+      --muted: #8fb8c8;
+      --line: rgba(0, 229, 255, 0.14);
+      --card: rgba(9, 15, 24, 0.72);
+      --shadow: 0 0 30px rgba(0, 229, 255, 0.12);
+      --radius: 22px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      background: black;
-      color: #00f7ff;
-      font-family: Arial;
-      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top center, rgba(0, 229, 255, 0.11), transparent 28%),
+        linear-gradient(180deg, #04060b 0%, #07111b 45%, #04060b 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(0, 229, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.15));
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(83, 255, 154, 0.07), transparent 22%),
+        radial-gradient(circle at 80% 12%, rgba(255, 75, 110, 0.06), transparent 20%),
+        radial-gradient(circle at 50% 80%, rgba(0, 229, 255, 0.08), transparent 25%);
+      animation: pulseGlow 8s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes pulseGlow {
+      from { opacity: 0.55; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.03); }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(100% - 28px, var(--max));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 72px 0 48px;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.22);
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(12, 22, 34, 0.86), rgba(5, 10, 17, 0.86));
+      box-shadow: var(--shadow);
+      padding: 28px 22px 26px;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0%, rgba(0,229,255,0.08) 45%, transparent 100%);
+      transform: translateX(-100%);
+      animation: sweep 7s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sweep {
+      to { transform: translateX(100%); }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--cyan);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      margin-bottom: 16px;
+      text-shadow: 0 0 14px rgba(0,229,255,0.35);
     }
 
     h1 {
-      font-size: 40px;
-      margin-top: 60px;
+      margin: 0;
+      font-size: clamp(2.3rem, 8vw, 5.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      text-transform: uppercase;
+      text-shadow:
+        0 0 12px rgba(255,255,255,0.12),
+        0 0 28px rgba(0,229,255,0.16);
+    }
+
+    .hero h1 span {
+      display: block;
+      color: var(--cyan);
+    }
+
+    .sub {
+      max-width: 760px;
+      margin: 18px 0 0;
+      font-size: clamp(1rem, 2.6vw, 1.2rem);
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .tagline {
+      margin-top: 18px;
+      color: var(--green);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(83,255,154,0.28);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,229,255,0.35);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 700;
+      background: rgba(0,229,255,0.08);
+      box-shadow: 0 0 20px rgba(0,229,255,0.12);
+    }
+
+    .btn.alt {
+      background: rgba(83,255,154,0.08);
+      border-color: rgba(83,255,154,0.32);
+      box-shadow: 0 0 20px rgba(83,255,154,0.10);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      border: 1px solid rgba(0,229,255,0.16);
+      background: rgba(255,255,255,0.02);
+      border-radius: 18px;
+      padding: 16px 14px;
+      min-height: 110px;
+    }
+
+    .stat .num {
+      color: var(--white);
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      text-shadow: 0 0 14px rgba(0,229,255,0.18);
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
     }
 
     section {
-      padding: 40px 20px;
-      border-bottom: 1px solid #00f7ff33;
+      padding: 28px 0 18px;
     }
 
-    .highlight {
-      color: #00ff88;
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      font-size: clamp(1.55rem, 5vw, 2.5rem);
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 42px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(0,229,255,0.35);
+    }
+
+    .section-kicker {
+      margin: 0 0 24px;
+      max-width: 760px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      grid-column: span 12;
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.55), transparent);
+    }
+
+    .card-inner {
+      padding: 22px 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.28rem;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .accent-cyan { border-color: rgba(0,229,255,0.22); }
+    .accent-green { border-color: rgba(83,255,154,0.24); }
+    .accent-red { border-color: rgba(255,75,110,0.22); }
+    .accent-yellow { border-color: rgba(255,213,74,0.22); }
+
+    .feature-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .feature-list li {
+      color: var(--muted);
+      line-height: 1.5;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .feature-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(0,229,255,0.4);
+    }
+
+    .quote-block {
+      text-align: center;
+      padding: 30px 20px 18px;
+    }
+
+    .quote-block p {
+      margin: 0 auto;
+      max-width: 860px;
+      font-size: clamp(1.25rem, 3.6vw, 2rem);
+      line-height: 1.45;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 14px rgba(0,229,255,0.14);
+    }
+
+    .quote-block strong {
+      color: var(--green);
+      text-shadow: 0 0 12px rgba(83,255,154,0.24);
+    }
+
+    .footer {
+      padding: 36px 0 52px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (min-width: 760px) {
+      .card.span-6 { grid-column: span 6; }
+      .card.span-4 { grid-column: span 4; }
+      .card.span-8 { grid-column: span 8; }
+    }
+
+    @media (max-width: 759px) {
+      .hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-panel {
+        padding: 22px 16px 20px;
+      }
+
+      .card-inner {
+        padding: 18px 16px;
+      }
     }
   </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-panel">
+        <div class="eyebrow">B-Day Rivals // Evolution System</div>
+        <h1>Your Birthday <span>Is a Division</span></h1>
+        <p class="sub">
+          B-Day Rivals is a fitness competition world where you face people who share
+          your birthday, evolve a living avatar from your real habits, and turn daily
+          discipline into visible progress.
+        </p>
+        <div class="tagline">No shortcuts. No fake progress. Only what you earn.</div>
 
-<h1>B-Day Rivals</h1>
+        <div class="hero-actions">
+          <a href="#system" class="btn">Enter the System</a>
+          <a href="#evolution" class="btn alt">See Evolution</a>
+        </div>
 
-<section>
-  <h2>Compete With Your Birthday</h2>
-  <p>Train. Evolve. Dominate your day.</p>
-</section>
+        <div class="hero-grid">
+          <div class="stat">
+            <div class="num">365</div>
+            <div class="label">birthday divisions built for direct identity-based competition</div>
+          </div>
+          <div class="stat">
+            <div class="num">4+</div>
+            <div class="label">avatar states from recovery to savage and elite evolution</div>
+          </div>
+          <div class="stat">
+            <div class="num">1</div>
+            <div class="label">real life data stream turning effort into visible change</div>
+          </div>
+          <div class="stat">
+            <div class="num">∞</div>
+            <div class="label">ways users can evolve through discipline, recovery, and pressure</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section>
-  <h2>Avatar Evolution</h2>
-  <p>Your real-world effort shapes your digital self.</p>
-</section>
+    <section id="system">
+      <h2 class="section-title">The Idea</h2>
+      <p class="section-kicker">
+        B-Day Rivals is not built around generic leaderboards. It is built around identity.
+        You compete with your birthday, grow through your own data, and see your habits
+        reflected back at you through systems that react to effort, recovery, consistency,
+        and intensity.
+      </p>
 
-<section>
-  <h2>AI Doctor</h2>
-  <p>Your data becomes real-time guidance.</p>
-</section>
+      <div class="grid">
+        <article class="card span-6 accent-cyan">
+          <div class="card-inner">
+            <h3>Compete With Your Birthday</h3>
+            <p>
+              Instead of disappearing into a massive pool, users enter a division tied to the
+              day they were born. The result is personal competition, cleaner rankings, and a
+              stronger feeling of identity and belonging.
+            </p>
+          </div>
+        </article>
 
-<section>
-  <h2>Ghost System</h2>
-  <p>Race your past. Beat your future.</p>
-</section>
+        <article class="card span-6 accent-green">
+          <div class="card-inner">
+            <h3>Real Effort Becomes Progress</h3>
+            <p>
+              Steps, runs, intense minutes, recovery trends, and consistency are not background
+              metrics. In B-Day, they become fuel for evolution, challenge access, progression,
+              and visual transformation.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
 
-<section>
-  <h2 class="highlight">You Don’t Use B-Day… You Become It</h2>
-</section>
+    <section id="evolution">
+      <h2 class="section-title">Avatar Evolution</h2>
+      <p class="section-kicker">
+        The avatar is the emotional center of B-Day Rivals. It is not decoration. It is a live
+        reflection of what the user is doing in the real world.
+      </p>
 
+      <div class="grid">
+        <article class="card span-4 accent-cyan">
+          <div class="card-inner">
+            <h3>Recovery Mode</h3>
+            <p>
+              Low-energy, healing, and reset state. The avatar reflects fatigue, recovery need,
+              and restoration.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-4 accent-red">
+          <div class="card-inner">
+            <h3>Savage Mode</h3>
+            <p>
+              Triggered by intense effort and pressure. Stronger visuals, aggressive energy,
+              faster pulse, and harder internal monologue.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-4 accent-yellow">
+          <div class="card-inner">
+            <h3>Elite Evolution</h3>
+            <p>
+              Built through proof, not hype. A more powerful form unlocked by sustained action,
+              discipline, and growth over time.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-12 accent-green">
+          <div class="card-inner">
+            <h3>Unlimited Possibility for Growth</h3>
+            <p>
+              Users are not stuck in a static fitness app loop. They can evolve visually,
+              mentally, competitively, and behaviorally. Different paths can emerge from how
+              they train, how they recover, how they compete, and how they live.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">AI Doctor</h2>
+      <p class="section-kicker">
+        The AI Doctor is designed to be the closest thing to a health guide in the user’s pocket.
+        It reads performance and recovery signals, then translates them into action.
+      </p>
+
+      <div class="grid">
+        <article class="card span-6 accent-cyan">
+          <div class="card-inner">
+            <h3>Your Body Speaks. AI Doctor Translates.</h3>
+            <p>
+              Sleep, stress, movement, workouts, supplements, recovery, and daily trends become
+              usable guidance instead of random numbers.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-6 accent-green">
+          <div class="card-inner">
+            <h3>Adaptive Guidance</h3>
+            <ul class="feature-list">
+              <li>Recovery warnings</li>
+              <li>Overtraining alerts</li>
+              <li>Nutrition and supplement timing</li>
+              <li>Readiness and performance feedback</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Widget Avatar</h2>
+      <p class="section-kicker">
+        The B-Day avatar does not stay trapped inside the app. It can live on the home screen
+        and eventually act like a live digital companion.
+      </p>
+
+      <div class="grid">
+        <article class="card span-8 accent-cyan">
+          <div class="card-inner">
+            <h3>Home Screen Presence</h3>
+            <p>
+              The widget avatar can pulse, move, react, display mood, recovery, and savage meter
+              status, and become a daily reminder of what the user is building.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-4 accent-red">
+          <div class="card-inner">
+            <h3>Savage Widget Mode</h3>
+            <p>
+              Higher intensity visuals, stronger glow, and more aggressive energy when the user
+              enters a high-effort state.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Ghost System</h2>
+      <p class="section-kicker">
+        The Ghost System turns movement into a race against memory, pacing, and identity.
+      </p>
+
+      <div class="grid">
+        <article class="card span-6 accent-cyan">
+          <div class="card-inner">
+            <h3>Race Your Past</h3>
+            <p>
+              Users can chase previous runs, previous performances, and a visual ghost of who
+              they were yesterday.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-6 accent-yellow">
+          <div class="card-inner">
+            <h3>Chase Your Future</h3>
+            <p>
+              Birthday rivals, pace goals, and live route overlays create a constant reminder:
+              somebody with your same birthday is moving too.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">More Systems</h2>
+      <p class="section-kicker">
+        B-Day Rivals is not one feature. It is a connected world of evolving systems.
+      </p>
+
+      <div class="grid">
+        <article class="card span-4 accent-cyan">
+          <div class="card-inner">
+            <h3>Mind Forge</h3>
+            <p>
+              Post-workout mental challenge that tests focus and recall after effort.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-4 accent-green">
+          <div class="card-inner">
+            <h3>Fuel Smart</h3>
+            <p>
+              Personalized food and grocery compatibility scoring based on user data.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-4 accent-red">
+          <div class="card-inner">
+            <h3>SAS Score</h3>
+            <p>
+              A real-time health and discipline score that reflects movement, recovery, and behavior.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="card accent-green">
+        <div class="quote-block">
+          <p>
+            B-Day Rivals is not about pretending to improve.  
+            <strong>It is about becoming visible proof of what you earn.</strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      B-Day Rivals // Train. Evolve. Compete. Become.
+    </div>
+  </div>
 </body>
 </html>
